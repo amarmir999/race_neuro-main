@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroTrack Vision Therapy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #5e60ce;
+            --primary-light: #6930c3;
+            --secondary: #64dfdf;
+            --accent: #80ffdb;
+            --dark: #22223b;
+            --light: #f8f9fa;
+            --success: #48bca4;
+            --track-color: rgba(94, 96, 206, 0.6);
+            --gradient-start: #5e60ce;
+            --gradient-end: #64dfdf;
+            --shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e6f1 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--dark);
+            padding: 20px;
+        }
+
+        .title-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .game-container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            background-color: white;
+            position: relative;
+        }
+
+        .track-selector {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .track-option {
+            width: 100px;
+            height: 100px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px;
+            background-color: white;
+        }
+
+        .track-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .track-option.selected {
+            border: 3px solid var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .track-option .label {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .track-option canvas {
+            width: 80px;
+            height: 80px;
+        }
+
+        .controls-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: white;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+        }
+
+        .control-label {
+            font-weight: 600;
+            margin-right: 15px;
+            color: var(--dark);
+        }
+
+        .direction-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(94, 96, 206, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .direction-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(94, 96, 206, 0.5);
+        }
+
+        .level-options {
+            display: flex;
+            background: #f2f2f2;
+            border-radius: 15px;
+            padding: 5px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .level-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: none;
+            margin: 0 5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: #666;
+        }
+
+        .level-btn:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        .level-btn.selected {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .game-canvas-container {
+            width: 100%;
+            height: 600px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f0f4fd 0%, #e6e9f0 100%);
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 0 10px;
+        }
+
+        .start-button {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+        }
+
+        .start-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(94, 96, 206, 0.4);
+        }
+
+        .start-button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: translateY(0);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .settings-button {
+            background: white;
+            color: var(--dark);
+        }
+
+        .settings-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.15);
+        }
+
+        .instructions-card {
+            width: 90%;
+            max-width: 1000px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .instructions-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .instructions-header i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .instructions-body {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .instruction-step {
+            display: flex;
+            margin: 15px 0;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            flex-grow: 1;
+        }
+
+        .timer-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background: var(--secondary);
+            width: 0%;
+            transition: width 0.5s linear;
+        }
+
+        .stats-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 14px;
+            display: none;
+        }
+
+        .stat-item {
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .track-selector {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .track-option {
+                margin-bottom: 15px;
+            }
+            
+            .controls-panel {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .game-canvas-container {
+                height: 450px;
+            }
+        }
+        
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .track-size-control {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #f2f2f2;
+            border-radius: 4px;
+            outline: none;
+            margin: 0 10px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        #trackSizeValue {
+            font-weight: 600;
+            min-width: 50px;
+            text-align: center;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="title-container">
+        <h1>NeuroTrack Vision Therapy</h1>
+        <p class="subtitle">Advanced visual tracking exercise for improved neural processing</p>
+    </div>
+    
+    <div class="game-container fade-in">
+        <div class="track-selector">
+            <div class="track-option selected" data-track="circle">
+                <canvas id="circlePreview"></canvas>
+                <div class="label">Circle</div>
+            </div>
+            <div class="track-option" data-track="figure8">
+                <canvas id="figure8Preview"></canvas>
+                <div class="label">Figure 8</div>
+            </div>
+            <div class="track-option" data-track="zigzag">
+                <canvas id="zigzagPreview"></canvas>
+                <div class="label">Zigzag</div>
+            </div>
+            <div class="track-option" data-track="spiral">
+                <canvas id="spiralPreview"></canvas>
+                <div class="label">Spiral</div>
+            </div>
+        </div>
+        
+        <div class="controls-panel">
+            <div class="control-group">
+                <span class="control-label">Direction:</span>
+                <button class="direction-btn" id="directionBtn"><i class="fas fa-rotate-right"></i></button>
+            </div>
+            
+            <div class="control-group">
+                <span class="control-label">Speed Level:</span>
+                <div class="level-options">
+                    <button class="level-btn selected" data-level="1">1</button>
+                    <button class="level-btn" data-level="2">2</button>
+                    <button class="level-btn" data-level="3">3</button>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <span class="control-label">Session:</span>
+                <div class="level-options">
+                    <button class="level-btn selected" data-session="30">30s</button>
+                    <button class="level-btn" data-session="60">60s</button>
+                    <button class="level-btn" data-session="120">2m</button>
+                </div>
+            </div>
+            
+            <div class="control-group track-size-control">
+                <span class="control-label">Track Size:</span>
+                <div class="slider-container">
+                    <input type="range" id="trackSizeSlider" min="40" max="95" value="75" class="slider">
+                    <span id="trackSizeValue">75%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-canvas-container">
+            <canvas id="gameCanvas"></canvas>
+            <div class="timer-display" id="timerDisplay">00:30</div>
+            <div class="progress-bar" id="progressBar"></div>
+            <div class="stats-container" id="statsContainer">
+                <div class="stat-item"><span class="stat-label">Track:</span> <span id="statTrack">Circle</span></div>
+                <div class="stat-item"><span class="stat-label">Speed:</span> <span id="statSpeed">Level 1</span></div>
+                <div class="stat-item"><span class="stat-label">Direction:</span> <span id="statDirection">Clockwise</span></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="action-buttons">
+        <button class="btn start-button pulse" id="startBtn">
+            <i class="fas fa-play"></i> Start Session
+        </button>
+    </div>
+    
+    <div class="instructions-card fade-in">
+        <div class="instructions-header">
+            <i class="fas fa-info-circle"></i>
+            <h3>How to Use</h3>
+        </div>
+        <div class="instructions-body">
+            <div class="instruction-step">
+                <div class="step-number">1</div>
+                <div class="step-text">Select a track pattern based on your therapy needs (Circle, Figure-8, Zigzag, or Spiral)</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">2</div>
+                <div class="step-text">Choose direction (clockwise or counter-clockwise) and adjust the speed level to match your ability</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">3</div>
+                <div class="step-text">Select a session duration that works for you</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">4</div>
+                <div class="step-text"><strong>Focus only on car #3</strong> (highlighted with a glow) as it moves around the track. Try to ignore the other cars.</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">5</div>
+                <div class="step-text">Follow car #3 with your eyes only - try not to move your head. This increases the challenge and effectiveness.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        const gameState = {
+            trackType: 'circle',
+            direction: 1, // 1 for clockwise, -1 for counter-clockwise
+            level: 1,
+            isRunning: false,
+            time: 0,
+            speed: 0,
+            sessionDuration: 30, // seconds
+            sessionTime: 0,
+            objectPosition: { x: 0, y: 0 },
+            trackData: {},
+            particles: [],
+            completedSessions: 0,
+            cars: [], // Array to hold multiple cars
+            trackWidth: 100, // Width of the track in pixels
+            trackSizePercent: 75, // Track size as percentage of available space
+            // New state variables for the random circle feature
+            circleActive: false,
+            nextCircleTime: 0,
+            circleStartTime: 0,
+            reactionTimes: [],
+            avgReactionTime: 0
+        };
+
+        // DOM elements
+        const trackOptions = document.querySelectorAll('.track-option');
+        const directionBtn = document.getElementById('directionBtn');
+        const levelBtns = document.querySelectorAll('.level-btn[data-level]');
+        const sessionBtns = document.querySelectorAll('.level-btn[data-session]');
+        const startBtn = document.getElementById('startBtn');
+        const gameCanvas = document.getElementById('gameCanvas');
+        const ctx = gameCanvas.getContext('2d');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const progressBar = document.getElementById('progressBar');
+        const statsContainer = document.getElementById('statsContainer');
+        const statTrack = document.getElementById('statTrack');
+        const statSpeed = document.getElementById('statSpeed');
+        const statDirection = document.getElementById('statDirection');
+        const trackSizeSlider = document.getElementById('trackSizeSlider');
+        const trackSizeValue = document.getElementById('trackSizeValue');
+
+        // Preview canvases
+        const circlePreview = document.getElementById('circlePreview').getContext('2d');
+        const figure8Preview = document.getElementById('figure8Preview').getContext('2d');
+        const zigzagPreview = document.getElementById('zigzagPreview').getContext('2d');
+        const spiralPreview = document.getElementById('spiralPreview').getContext('2d');
+
+        // Colors
+        const colors = {
+            trackGradient: ['#5e60ce', '#6930c3', '#5390d9', '#64dfdf'],
+            objectGradient: ['#80ffdb', '#72efdd', '#64dfdf'],
+            particleColors: ['#80ffdb', '#72efdd', '#64dfdf', '#5390d9', '#6930c3']
+        };
+
+        // Set canvas dimensions
+        function setupCanvas() {
+            // Set the game canvas dimensions
+            gameCanvas.width = gameCanvas.clientWidth;
+            gameCanvas.height = gameCanvas.clientHeight;
+            
+            // Set preview canvas dimensions
+            document.querySelectorAll('.track-option canvas').forEach(canvas => {
+                canvas.width = 80;
+                canvas.height = 80;
+            });
+            
+            // Generate track data
+            generateTrackData();
+            
+            // Draw previews
+            drawTrackPreview(circlePreview, 'circle');
+            drawTrackPreview(figure8Preview, 'figure8');
+            drawTrackPreview(zigzagPreview, 'zigzag');
+            drawTrackPreview(spiralPreview, 'spiral');
+        }
+
+        // Generate track path data
+        function generateTrackData() {
+            const canvasWidth = gameCanvas.width;
+            const canvasHeight = gameCanvas.height;
+            const centerX = canvasWidth / 2;
+            const centerY = canvasHeight / 2;
+            
+            // Calculate size factor based on track size percentage
+            const sizeFactor = gameState.trackSizePercent / 100;
+
+            // Circle track
+            gameState.trackData.circle = {
+                radius: Math.min(canvasWidth, canvasHeight) * 0.38 * sizeFactor,
+                centerX: centerX,
+                centerY: centerY,
+                getPosition: (t, laneOffset = 0) => {
+                    const angle = t * gameState.direction;
+                    // Adjust radius based on lane offset
+                    const adjustedRadius = gameState.trackData.circle.radius + laneOffset;
+                    return {
+                        x: centerX + Math.cos(angle) * adjustedRadius,
+                        y: centerY + Math.sin(angle) * adjustedRadius
+                    };
+                }
+            };
+            
+            // Figure 8 track - now wider with proper lane offsets
+            gameState.trackData.figure8 = {
+                width: canvasWidth * 0.7 * sizeFactor,
+                height: canvasHeight * 0.5 * sizeFactor,
+                centerX: centerX,
+                centerY: centerY,
+                getPosition: (t, laneOffset = 0) => {
+                    const angle = t * gameState.direction;
+                    
+                    // Increase base multipliers and make them scale with size factor
+                    // This allows the figure-8 to grow much larger when the size increases
+                    const baseWidthMultiplier = 0.5 * (1 + (sizeFactor - 0.75) * 0.5);  // Scales up with size
+                    const baseHeightMultiplier = 0.4 * (1 + (sizeFactor - 0.75) * 0.5); // Scales up with size
+                    
+                    // Calculate the base position on the track
+                    const baseX = centerX + Math.sin(angle) * gameState.trackData.figure8.width * baseWidthMultiplier;
+                    const baseY = centerY + Math.sin(angle * 2) * gameState.trackData.figure8.height * baseHeightMultiplier;
+                    
+                    if (laneOffset === 0) {
+                        return { x: baseX, y: baseY };
+                    }
+                    
+                    // Calculate the tangent vector (derivatives of the parametric equations)
+                    const tangentX = Math.cos(angle) * gameState.trackData.figure8.width * baseWidthMultiplier;
+                    const tangentY = 2 * Math.cos(angle * 2) * gameState.trackData.figure8.height * baseHeightMultiplier;
+                    
+                    // Calculate length of tangent vector for normalization
+                    const tangentLength = Math.sqrt(tangentX * tangentX + tangentY * tangentY);
+                    if (tangentLength === 0) return { x: baseX, y: baseY };
+                    
+                    // Normalize tangent vector
+                    const normalizedTangentX = tangentX / tangentLength;
+                    const normalizedTangentY = tangentY / tangentLength;
+                    
+                    // Calculate normal vector (perpendicular to tangent) by rotating 90 degrees
+                    const normalX = -normalizedTangentY;
+                    const normalY = normalizedTangentX;
+                    
+                    // Apply lane offset along the normal vector
+                    return {
+                        x: baseX + normalX * laneOffset,
+                        y: baseY + normalY * laneOffset
+                    };
+                }
+            };
+            
+            // Zigzag track - now wider
+            gameState.trackData.zigzag = {
+                width: canvasWidth * 0.8 * sizeFactor,
+                height: canvasHeight * 0.6 * sizeFactor,
+                points: 6,
+                centerX: centerX,
+                centerY: centerY,
+                getPosition: (t, laneOffset = 0) => {
+                    // Use a fixed angle, then reverse if direction is -1
+                    const modAngle = (t % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+                    const finalAngle = gameState.direction === 1 ? modAngle : (2 * Math.PI - modAngle);
+
+                    const segmentT = (finalAngle / (2 * Math.PI)) * gameState.trackData.zigzag.points;
+                    const segmentIndex = Math.floor(segmentT);
+                    const segmentProgress = segmentT - segmentIndex;
+                    
+                    const segmentWidth = gameState.trackData.zigzag.width / (gameState.trackData.zigzag.points - 1);
+                    const startX = centerX - gameState.trackData.zigzag.width / 2 + segmentIndex * segmentWidth;
+                    const endX = startX + segmentWidth;
+                    
+                    // Apply lane offset perpendicular to the zigzag line
+                    const isVertical = segmentIndex % 2 === 0;
+                    const laneOffsetY = isVertical ? 0 : laneOffset;
+                    const laneOffsetX = isVertical ? laneOffset : 0;
+                    
+                    const startY = centerY + ((segmentIndex % 2 === 0) ? -1 : 1) * (gameState.trackData.zigzag.height / 2);
+                    const endY = centerY + ((segmentIndex % 2 === 0) ? 1 : -1) * (gameState.trackData.zigzag.height / 2);
+                    
+                    return {
+                        x: startX + (endX - startX) * segmentProgress + laneOffsetX,
+                        y: startY + (endY - startY) * segmentProgress + laneOffsetY
+                    };
+                }
+            };
+            
+            // Spiral track
+            gameState.trackData.spiral = {
+                revolve: 0,
+                centerX: centerX,
+                centerY: centerY,
+                getPosition: function(t, laneOffset = 0) {
+                    const baseRadius = Math.min(gameCanvas.width, gameCanvas.height) * 0.3 * sizeFactor;
+                    // Wrap t so the radius never exceeds baseRadius
+                    const modT = t % 1;
+                    const angle = 4 * Math.PI * t + this.revolve;
+                    const radius = baseRadius * modT;
+                    return {
+                        x: this.centerX + (radius + laneOffset) * Math.cos(angle),
+                        y: this.centerY + (radius + laneOffset) * Math.sin(angle)
+                    };
+                }
+            };
+            
+            // Initialize cars
+            initCars();
+        }
+
+        // Initialize cars with different colors and numbers
+        function initCars() {
+            gameState.cars = [];
+            
+            // Car colors - different for each car
+            const carColors = [
+                ['#FF5252', '#FF1744', '#D50000'], // Red
+                ['#80ffdb', '#72efdd', '#64dfdf'], // Original blue/teal
+                ['#FFEB3B', '#FDD835', '#F9A825'], // Yellow
+                ['#4CAF50', '#43A047', '#2E7D32'], // Green
+                ['#9C27B0', '#8E24AA', '#6A1B9A']  // Purple
+            ];
+            
+            // Car numbers
+            const carNumbers = [1, 3, 5, 7, 9];
+            
+            // Create 5 cars with different positions, speeds, colors, and numbers
+            for (let i = 0; i < 5; i++) {
+                // Calculate lane offset for different track positions
+                // We'll space them evenly across the track width but not right at the edges
+                const laneOffset = -gameState.trackWidth/2 * 0.8 + (i * gameState.trackWidth/4 * 0.8);
+                
+                // Random speed multiplier between 0.7 and 1.3
+                // Car #3 will always be at index 1 with a predictable speed
+                const speedMultiplier = (i === 1) ? 1.0 : 0.7 + Math.random() * 0.6;
+                
+                gameState.cars.push({
+                    number: carNumbers[i],
+                    colors: carColors[i],
+                    laneOffset: laneOffset,
+                    speedMultiplier: speedMultiplier,
+                    position: { x: 0, y: 0 },
+                    prevPosition: null,
+                    isMainCar: i === 1, // Car #3 is the main car to track
+                    travelt: 0.2 * i
+                });
+            }
+        }
+
+        // Create particle effect
+        function createParticle(x, y) {
+            return {
+                x,
+                y,
+                size: 2 + Math.random() * 3,
+                speedX: (Math.random() - 0.5) * 2,
+                speedY: (Math.random() - 0.5) * 2,
+                color: colors.particleColors[Math.floor(Math.random() * colors.particleColors.length)],
+                life: 30 + Math.random() * 20
+            };
+        }
+
+        // Update particles
+        function updateParticles() {
+            for (let i = gameState.particles.length - 1; i >= 0; i--) {
+                const p = gameState.particles[i];
+                p.x += p.speedX;
+                p.y += p.speedY;
+                p.life--;
+                
+                if (p.life <= 0) {
+                    gameState.particles.splice(i, 1);
+                }
+            }
+            
+            // Add new particles at the object position
+            if (gameState.isRunning && Math.random() > 0.7) {
+                gameState.particles.push(createParticle(
+                    gameState.objectPosition.x,
+                    gameState.objectPosition.y
+                ));
+            }
+        }
+
+        // Draw particles
+        function drawParticles() {
+            for (const p of gameState.particles) {
+                ctx.globalAlpha = p.life / 50;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        // Draw main game track
+        function drawGameTrack() {
+            const width = gameCanvas.width;
+            const height = gameCanvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            // Clear canvas with gradient background
+            const bgGradient = ctx.createLinearGradient(0, 0, width, height);
+            bgGradient.addColorStop(0, '#f0f4fd');
+            bgGradient.addColorStop(1, '#e6e9f0');
+            ctx.fillStyle = bgGradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            // Draw track based on selected type
+            const trackGradient = ctx.createLinearGradient(0, 0, width, height);
+            for (let i = 0; i < colors.trackGradient.length; i++) {
+                trackGradient.addColorStop(i / (colors.trackGradient.length - 1), colors.trackGradient[i]);
+            }
+            ctx.strokeStyle = trackGradient;
+            ctx.lineWidth = gameState.trackWidth; // Wider track
+            
+            if (gameState.trackType === 'circle') {
+                const track = gameState.trackData.circle;
+                
+                // Draw glow effect
+                ctx.save();
+                ctx.shadowColor = 'rgba(94, 96, 206, 0.3)';
+                ctx.shadowBlur = 15;
+                
+                ctx.beginPath();
+                ctx.arc(track.centerX, track.centerY, track.radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.restore();
+                
+                // Draw inner thinner track for visual effect
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(track.centerX, track.centerY, track.radius - gameState.trackWidth/2 + 5, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Draw outer thinner track for visual effect
+                ctx.beginPath();
+                ctx.arc(track.centerX, track.centerY, track.radius + gameState.trackWidth/2 - 5, 0, 2 * Math.PI);
+                ctx.stroke();
+            } 
+            else if (gameState.trackType === 'figure8') {
+                const track = gameState.trackData.figure8;
+                
+                // Draw glow effect
+                ctx.save();
+                ctx.shadowColor = 'rgba(94, 96, 206, 0.3)';
+                ctx.shadowBlur = 15;
+                
+                // Draw the main track with proper width
+                ctx.lineWidth = gameState.trackWidth;
+                ctx.beginPath();
+                
+                // Draw the center of the track
+                for (let t = 0; t <= 2 * Math.PI; t += 0.05) {
+                    const pos = track.getPosition(t, 0);
+                    if (t === 0) {
+                        ctx.moveTo(pos.x, pos.y);
+                    } else {
+                        ctx.lineTo(pos.x, pos.y);
+                    }
+                }
+                ctx.stroke();
+                ctx.restore();
+                
+                // Draw inner and outer track borders for visual clarity
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.lineWidth = 2;
+                
+                // Draw inner border
+                ctx.beginPath();
+                for (let t = 0; t <= 2 * Math.PI; t += 0.05) {
+                    const pos = track.getPosition(t, -gameState.trackWidth/2 + 5);
+                    if (t === 0) {
+                        ctx.moveTo(pos.x, pos.y);
+                    } else {
+                        ctx.lineTo(pos.x, pos.y);
+                    }
+                }
+                ctx.stroke();
+                
+                // Draw outer border
+                ctx.beginPath();
+                for (let t = 0; t <= 2 * Math.PI; t += 0.05) {
+                    const pos = track.getPosition(t, gameState.trackWidth/2 - 5);
+                    if (t === 0) {
+                        ctx.moveTo(pos.x, pos.y);
+                    } else {
+                        ctx.lineTo(pos.x, pos.y);
+                    }
+                }
+                ctx.stroke();
+            } 
+            else if (gameState.trackType === 'zigzag') {
+                const track = gameState.trackData.zigzag;
+                
+                // Draw glow effect
+                ctx.save();
+                ctx.shadowColor = 'rgba(94, 96, 206, 0.3)';
+                ctx.shadowBlur = 15;
+                
+                ctx.beginPath();
+                for (let i = 0; i < track.points; i++) {
+                    const x = track.centerX - track.width / 2 + (track.width / (track.points - 1)) * i;
+                    const y = track.centerY + ((i % 2 === 0) ? -1 : 1) * (track.height / 2);
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+                ctx.restore();
+                
+                // Draw inner thinner track for visual effect
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for (let i = 0; i < track.points; i++) {
+                    const x = track.centerX - track.width / 2 + (track.width / (track.points - 1)) * i;
+                    const y = track.centerY + ((i % 2 === 0) ? -1 : 1) * (track.height / 2 - 3);
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            } 
+            else if (gameState.trackType === 'spiral') {
+                const track = gameState.trackData.spiral;
+                ctx.save();
+                ctx.shadowColor = 'rgba(94, 96, 206, 0.3)';
+                ctx.shadowBlur = 15;
+                ctx.beginPath();
+                const steps = 200;
+                for (let i = 0; i <= steps; i++) {
+                    const tStep = i / steps;
+                    const pos = track.getPosition(tStep, 0);
+                    if (i === 0) ctx.moveTo(pos.x, pos.y);
+                    else ctx.lineTo(pos.x, pos.y);
+                }
+                ctx.stroke();
+                ctx.restore();
+            }
+            
+            // Update and draw particles
+            updateParticles();
+            drawParticles();
+            
+            // Draw all cars
+            if (gameState.isRunning) {
+                gameState.cars.forEach(car => {
+                    const pos = car.position;
+                    const objSize = 14;
+                    
+                    // Calculate angle based on movement direction
+                    let angle = 0;
+                    if (car.prevPosition) {
+                        const dx = pos.x - car.prevPosition.x;
+                        const dy = pos.y - car.prevPosition.y;
+                        if (dx !== 0 || dy !== 0) {
+                            angle = Math.atan2(dy, dx);
+                        }
+                    }
+                    
+                    // Draw the racing car
+                    drawRacingCar(ctx, pos.x, pos.y, objSize, angle, car);
+                });
+            }
+        }
+
+        // Draw a racing car with specific number and colors
+        function drawRacingCar(ctx, x, y, size, angle, carConfig) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+            
+            const colors = carConfig.colors || colors.objectGradient;
+            const number = carConfig.number || 3;
+            const isMainCar = carConfig.isMainCar;
+            
+            // Draw car body (pointed shape)
+            ctx.beginPath();
+            ctx.moveTo(size, 0); // Front of car
+            ctx.lineTo(size * 0.5, -size * 0.6); // Top right
+            ctx.lineTo(-size * 0.7, -size * 0.6); // Top left
+            ctx.lineTo(-size, 0); // Rear
+            ctx.lineTo(-size * 0.7, size * 0.6); // Bottom left
+            ctx.lineTo(size * 0.5, size * 0.6); // Bottom right
+            ctx.closePath();
+            
+            // Add gradient to car body
+            const carGradient = ctx.createLinearGradient(-size, 0, size, 0);
+            carGradient.addColorStop(0, colors[2]);
+            carGradient.addColorStop(0.5, colors[0]);
+            carGradient.addColorStop(1, colors[1]);
+            ctx.fillStyle = carGradient;
+            
+            // Add glow effect to the main car to help track it
+            if (isMainCar) {
+                ctx.shadowColor = colors[0];
+                ctx.shadowBlur = 15;
+            }
+            
+            ctx.fill();
+            
+            // Draw wheels
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#333';
+            // Front-left wheel
+            ctx.beginPath();
+            ctx.ellipse(size * 0.5, -size * 0.7, size * 0.2, size * 0.3, 0, 0, Math.PI * 2);
+            ctx.fill();
+            // Front-right wheel
+            ctx.beginPath();
+            ctx.ellipse(size * 0.5, size * 0.7, size * 0.2, size * 0.3, 0, 0, Math.PI * 2);
+            ctx.fill();
+            // Rear-left wheel
+            ctx.beginPath();
+            ctx.ellipse(-size * 0.5, -size * 0.7, size * 0.2, size * 0.3, 0, 0, Math.PI * 2);
+            ctx.fill();
+            // Rear-right wheel
+            ctx.beginPath();
+            ctx.ellipse(-size * 0.5, size * 0.7, size * 0.2, size * 0.3, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Add cockpit
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.beginPath();
+            ctx.ellipse(size * 0.1, 0, size * 0.3, size * 0.4, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Add number
+            ctx.fillStyle = '#333';
+            ctx.font = `bold ${size}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(number.toString(), size * 0.1, 0);
+            
+            // Add highlight for main car to track
+            if (isMainCar) {
+                ctx.lineWidth = size * 0.1;
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.beginPath();
+                ctx.arc(size * 0.1, 0, size * 0.5, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            // Draw the random circle around car #3 if active
+            if (carConfig.isMainCar && gameState.circleActive) {
+                ctx.lineWidth = size * 0.2;
+                ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
+                ctx.beginPath();
+                ctx.arc(0, 0, size * 2.0, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            ctx.restore();
+        }
+
+        // Draw track preview
+        function drawTrackPreview(ctx, trackType) {
+            const width = ctx.canvas.width;
+            const height = ctx.canvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Create gradient for track
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, colors.trackGradient[0]);
+            gradient.addColorStop(1, colors.trackGradient[3]);
+            
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 3;
+            
+            if (trackType === 'circle') {
+                const radius = width * 0.35;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+            } 
+            else if (trackType === 'figure8') {
+                ctx.beginPath();
+                for (let t = 0; t <= 2 * Math.PI; t += 0.1) {
+                    // Larger multipliers for preview too
+                    const x = centerX + Math.sin(t) * width * 0.4;
+                    const y = centerY + Math.sin(t * 2) * height * 0.3;
+                    if (t === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            } 
+            else if (trackType === 'zigzag') {
+                const zigWidth = width * 0.8;
+                const zigHeight = height * 0.6;
+                const points = 4;
+                
+                ctx.beginPath();
+                for (let i = 0; i < points; i++) {
+                    const x = centerX - zigWidth / 2 + (zigWidth / (points - 1)) * i;
+                    const y = centerY + ((i % 2 === 0) ? -1 : 1) * (zigHeight / 2);
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            } 
+            else if (trackType === 'spiral') {
+                ctx.beginPath();
+                let steps = 50;
+                for (let i = 0; i <= steps; i++) {
+                    const tStep = i / steps;
+                    const angle = 2 * Math.PI * 2 * tStep;
+                    const r = (width * 0.3) * tStep;
+                    const x = centerX + r * Math.cos(angle);
+                    const y = centerY + r * Math.sin(angle);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+            
+            // Draw a small racing car representing the moving target
+            const previewX = centerX;
+            const previewY = centerY - width * 0.25;
+            const carSize = 4;
+            const carAngle = Math.PI / 2; // Pointing upward
+            
+            // Draw car #3 as the main car in the preview
+            drawRacingCar(ctx, previewX, previewY, carSize, carAngle, {
+                colors: ['#80ffdb', '#72efdd', '#64dfdf'],
+                number: 3,
+                isMainCar: true
+            });
+        }
+
+        // Format time display
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Update timer display
+        function updateTimer() {
+            const remainingTime = gameState.sessionDuration - gameState.sessionTime;
+            timerDisplay.textContent = formatTime(remainingTime);
+            
+            // Update progress bar
+            const progress = (gameState.sessionTime / gameState.sessionDuration) * 100;
+            progressBar.style.width = `${progress}%`;
+            
+            // Change color as time runs out
+            if (remainingTime < 10) {
+                timerDisplay.style.color = '#f44336';
+            } else {
+                timerDisplay.style.color = '#333';
+            }
+        }
+
+        // Update stats display
+        function updateStats() {
+            statTrack.textContent = gameState.trackType.charAt(0).toUpperCase() + gameState.trackType.slice(1);
+            statSpeed.textContent = `Level ${gameState.level}`;
+            statDirection.textContent = gameState.direction > 0 ? 'Clockwise' : 'Counter-Clockwise';
+        }
+
+        // Update game state
+        function updateGame(timestamp) {
+            if (!gameState.lastTimestamp) {
+                gameState.lastTimestamp = timestamp;
+            }
+            
+            const deltaTime = timestamp - gameState.lastTimestamp;
+            gameState.lastTimestamp = timestamp;
+            
+            if (gameState.isRunning) {
+                // Update time
+                gameState.time += deltaTime * 0.001 * gameState.speed;
+                
+                // Update session time
+                gameState.sessionTime += deltaTime * 0.001;
+                updateTimer();
+                
+                // Check if session is complete
+                if (gameState.sessionTime >= gameState.sessionDuration) {
+                    completeSession();
+                    return;
+                }
+                
+                // Update all cars
+                const track = gameState.trackData[gameState.trackType];
+                gameState.cars.forEach(car => {
+                    // Store previous position for angle calculation
+                    car.prevPosition = { ...car.position };
+
+                    // Increment the car's travel parameter over time using the game's speed and car's speed multiplier
+                    car.travelt += (gameState.speed * car.speedMultiplier) * (deltaTime * 0.001);
+
+                    // Update position based on track type and lane offset
+                    car.position = track.getPosition(car.travelt, car.laneOffset);
+                });
+                
+                // For backward compatibility
+                if (gameState.cars.length > 0) {
+                    gameState.prevPosition = { ...gameState.objectPosition };
+                    gameState.objectPosition = gameState.cars[1].position; // Car #3
+                }
+                
+                // Check if it's time to show the random circle
+                if (!gameState.circleActive && timestamp >= gameState.nextCircleTime) {
+                    showRandomCircle();
+                }
+                
+                // Draw game
+                drawGameTrack();
+                
+                // Continue animation
+                requestAnimationFrame(updateGame);
+            }
+        }
+
+        // Show random circle around car #3
+        function showRandomCircle() {
+            gameState.circleActive = true;
+            gameState.circleStartTime = performance.now();
+        }
+
+        // Hide circle and schedule next appearance
+        function hideCircle() {
+            if (gameState.circleActive) {
+                const reactionTime = (performance.now() - gameState.circleStartTime) / 1000;
+                gameState.reactionTimes.push(reactionTime);
+                
+                // Calculate average reaction time
+                if (gameState.reactionTimes.length > 0) {
+                    const sum = gameState.reactionTimes.reduce((a, b) => a + b, 0);
+                    gameState.avgReactionTime = sum / gameState.reactionTimes.length;
+                }
+                
+                gameState.circleActive = false;
+                
+                // Schedule next circle appearance (random between 3-9 seconds)
+                const nextDelay = 3000 + Math.random() * 6000;
+                gameState.nextCircleTime = performance.now() + nextDelay;
+            }
+        }
+
+        // Start game
+        function startGame() {
+            if (gameState.isRunning) return;
+            
+            // Set speed based on level
+            gameState.speed = 0.2 * gameState.level;
+            
+            // Reset time
+            gameState.time = 0;
+            gameState.sessionTime = 0;
+            gameState.lastTimestamp = null;
+            
+            // Set initial positions for all cars
+            const track = gameState.trackData[gameState.trackType];
+            gameState.cars.forEach((car, index) => {
+                // Stagger starting positions slightly
+                const staggerAngle = (index / gameState.cars.length) * Math.PI * 0.5;
+                car.position = track.getPosition(staggerAngle, car.laneOffset);
+            });
+            
+            // For backward compatibility
+            if (gameState.cars.length > 0) {
+                gameState.objectPosition = gameState.cars[1].position; // Car #3
+            }
+            
+            // Update button text
+            startBtn.innerHTML = '<i class="fas fa-stop"></i> Stop Session';
+            startBtn.classList.remove('pulse');
+            gameState.isRunning = true;
+            
+            // Show timer and stats
+            timerDisplay.style.display = 'block';
+            updateTimer();
+            statsContainer.style.display = 'block';
+            updateStats();
+            
+            // Reset circle tracking variables
+            gameState.circleActive = false;
+            gameState.reactionTimes = [];
+            gameState.avgReactionTime = 0;
+            
+            // Schedule first circle to appear between 3-9 seconds from start
+            const firstDelay = 3000 + Math.random() * 6000;
+            gameState.nextCircleTime = performance.now() + firstDelay;
+            
+            // Start animation
+            requestAnimationFrame(updateGame);
+        }
+
+        // Stop game
+        function stopGame() {
+            gameState.isRunning = false;
+            startBtn.innerHTML = '<i class="fas fa-play"></i> Start Session';
+            startBtn.classList.add('pulse');
+            
+            // Stop race sound when session is stopped
+            stopRaceSound();
+            
+            timerDisplay.style.display = 'none';
+            progressBar.style.width = '0%';
+            statsContainer.style.display = 'none';
+            
+            // Reset circle state
+            gameState.circleActive = false;
+        }
+
+        // Complete session
+        function completeSession() {
+            gameState.isRunning = false;
+            startBtn.textContent = 'Start Session';
+            startBtn.innerHTML = '<i class="fas fa-play"></i> Start Session';
+            startBtn.classList.remove('pulse');
+            
+            timerDisplay.style.display = 'none';
+            progressBar.style.width = '0%';
+            statsContainer.style.display = 'none';
+            
+            gameState.completedSessions++;
+            
+            // Show completion effect
+            showCompletionEffect();
+        }
+
+        // Show completion effect
+        function showCompletionEffect() {
+            // Generate celebratory particles
+            for (let i = 0; i < 50; i++) {
+                const x = Math.random() * gameCanvas.width;
+                const y = Math.random() * gameCanvas.height;
+                gameState.particles.push(createParticle(x, y));
+            }
+            
+            // Animation to fade out particles
+            function fadeOutParticles() {
+                if (gameState.particles.length > 0) {
+                    updateParticles();
+                    drawGameTrack();
+                    requestAnimationFrame(fadeOutParticles);
+                }
+            }
+            
+            fadeOutParticles();
+        }
+
+        // Event listeners
+        trackOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Update selected track
+                trackOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                gameState.trackType = option.dataset.track;
+                
+                // Redraw game track
+                drawGameTrack();
+            });
+        });
+
+        directionBtn.addEventListener('click', () => {
+            // Toggle direction
+            gameState.direction *= -1;
+            directionBtn.innerHTML = gameState.direction > 0 ? '<i class="fas fa-rotate-right"></i>' : '<i class="fas fa-rotate-left"></i>';
+        });
+
+        levelBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll(`.level-btn[data-${btn.dataset.level ? 'level' : 'session'}]`).forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+
+                if (btn.dataset.level) {
+                    gameState.level = parseInt(btn.dataset.level);
+
+                    // Allow updating speed while the game is running
+                    if (gameState.isRunning) {
+                        gameState.speed = 0.2 * gameState.level;
+                    }
+                } else if (btn.dataset.session) {
+                    // Update selected session
+                    sessionBtns.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    gameState.sessionDuration = parseInt(btn.dataset.session);
+                }
+            });
+        });
+
+        sessionBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update selected session
+                sessionBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                gameState.sessionDuration = parseInt(btn.dataset.session);
+            });
+        });
+
+        startBtn.addEventListener('click', () => {
+            if (gameState.isRunning) {
+                stopGame();
+            } else {
+                initiateRaceStart();
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            setupCanvas();
+            drawGameTrack();
+        });
+
+        // Event listeners for the track size slider
+        trackSizeSlider.addEventListener('input', function() {
+            const size = this.value;
+            trackSizeValue.textContent = `${size}%`;
+            gameState.trackSizePercent = parseInt(size);
+
+            // Allow changes while the game is running
+            generateTrackData();
+            drawGameTrack();
+        });
+
+        // Audio elements for sounds
+        const startSound = new Audio('start.wav');
+        const raceSound = new Audio('race.wav');
+        
+        // Configure audio settings
+        raceSound.loop = true;
+        
+        // Function to play start sound
+        function playStartSound() {
+            startSound.currentTime = 0;
+            startSound.play();
+        }
+        
+        // Function to play race sound
+        function playRaceSound() {
+            raceSound.currentTime = 0;
+            raceSound.play();
+        }
+        
+        // Function to stop race sound
+        function stopRaceSound() {
+            raceSound.pause();
+            raceSound.currentTime = 0;
+        }
+        
+        // Race start sequence with countdown
+        function initiateRaceStart() {
+            // Disable start button during countdown
+            startBtn.disabled = true;
+            
+            // Play start sound immediately
+            playStartSound();
+            
+            // Create and show countdown display
+            const countdownDisplay = document.createElement('div');
+            countdownDisplay.style.position = 'absolute';
+            countdownDisplay.style.top = '50%';
+            countdownDisplay.style.left = '50%';
+            countdownDisplay.style.transform = 'translate(-50%, -50%)';
+            countdownDisplay.style.fontSize = '10rem';
+            countdownDisplay.style.fontWeight = 'bold';
+            countdownDisplay.style.color = 'rgba(94, 96, 206, 0.8)';
+            countdownDisplay.style.textShadow = '0 0 20px rgba(255, 255, 255, 0.6)';
+            countdownDisplay.style.zIndex = '100';
+            document.querySelector('.game-canvas-container').appendChild(countdownDisplay);
+            
+            let countdown = 3;
+            countdownDisplay.textContent = countdown;
+            
+            // Start countdown
+            const countdownTimer = setInterval(() => {
+                countdown--;
+                
+                if (countdown > 0) {
+                    countdownDisplay.textContent = countdown;
+                } else {
+                    // Clear the interval when countdown reaches 0
+                    clearInterval(countdownTimer);
+                    
+                    // Remove the countdown display
+                    countdownDisplay.textContent = "GO!";
+                    
+                    // Start race sound
+                    playRaceSound();
+                    
+                    // Actually start the game after a brief pause to show "GO!"
+                    setTimeout(() => {
+                        countdownDisplay.remove();
+                        startBtn.disabled = false;
+                        startGame();
+                    }, 500);
+                }
+            }, 1000);
+        }
+        
+        // Add mouse click event listener to detect clicks on the circle
+        gameCanvas.addEventListener('click', () => {
+            if (gameState.isRunning && gameState.circleActive) {
+                hideCircle();
+            }
+        });
+
+        // Initialize game
+        setupCanvas();
+        drawGameTrack();
+    </script>
+</body>
+</html>
