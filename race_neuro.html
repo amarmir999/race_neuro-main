@@ -438,6 +438,20 @@
             text-align: center;
             color: var(--primary);
         }
+
+        /* New reaction timer styles */
+        .reaction-timer {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -502,6 +516,7 @@
         <div class="game-canvas-container">
             <canvas id="gameCanvas"></canvas>
             <div class="timer-display" id="timerDisplay">00:30</div>
+            <div class="reaction-timer" id="reactionTimer">0.00s</div>
             <div class="progress-bar" id="progressBar"></div>
             <div class="stats-container" id="statsContainer">
                 <div class="stat-item"><span class="stat-label">Track:</span> <span id="statTrack">Circle</span></div>
@@ -569,7 +584,8 @@
             nextCircleTime: 0,
             circleStartTime: 0,
             reactionTimes: [],
-            avgReactionTime: 0
+            avgReactionTime: 0,
+            currentReactionTime: 0 // Add this new property
         };
 
         // DOM elements
@@ -588,6 +604,7 @@
         const statDirection = document.getElementById('statDirection');
         const trackSizeSlider = document.getElementById('trackSizeSlider');
         const trackSizeValue = document.getElementById('trackSizeValue');
+        const reactionTimer = document.getElementById('reactionTimer');
 
         // Preview canvases
         const circlePreview = document.getElementById('circlePreview').getContext('2d');
@@ -1268,6 +1285,12 @@
                     showRandomCircle();
                 }
                 
+                // Update reaction timer if circle is active
+                if (gameState.circleActive) {
+                    gameState.currentReactionTime = (performance.now() - gameState.circleStartTime) / 1000;
+                    reactionTimer.textContent = gameState.currentReactionTime.toFixed(2) + 's';
+                }
+                
                 // Draw game
                 drawGameTrack();
                 
@@ -1280,6 +1303,11 @@
         function showRandomCircle() {
             gameState.circleActive = true;
             gameState.circleStartTime = performance.now();
+            gameState.currentReactionTime = 0;
+            
+            // Show the reaction timer
+            reactionTimer.style.display = 'block';
+            reactionTimer.textContent = '0.00s';
         }
 
         // Hide circle and schedule next appearance
@@ -1287,6 +1315,24 @@
             if (gameState.circleActive) {
                 const reactionTime = (performance.now() - gameState.circleStartTime) / 1000;
                 gameState.reactionTimes.push(reactionTime);
+                
+                // Show final reaction time for a moment before hiding
+                reactionTimer.textContent = reactionTime.toFixed(2) + 's';
+                
+                // Change color based on reaction time
+                if (reactionTime < 0.5) {
+                    reactionTimer.style.background = 'rgba(76, 175, 80, 0.8)'; // Green for fast
+                } else if (reactionTime < 1.0) {
+                    reactionTimer.style.background = 'rgba(255, 193, 7, 0.8)'; // Yellow for medium
+                } else {
+                    reactionTimer.style.background = 'rgba(255, 0, 0, 0.8)'; // Red for slow
+                }
+                
+                // Hide reaction timer after 1.5 seconds
+                setTimeout(() => {
+                    reactionTimer.style.display = 'none';
+                    reactionTimer.style.background = 'rgba(255, 0, 0, 0.8)'; // Reset color
+                }, 1500);
                 
                 // Calculate average reaction time
                 if (gameState.reactionTimes.length > 0) {
@@ -1347,6 +1393,9 @@
             const firstDelay = 3000 + Math.random() * 6000;
             gameState.nextCircleTime = performance.now() + firstDelay;
             
+            // Reset reaction timer display
+            reactionTimer.style.display = 'none';
+            
             // Start animation
             requestAnimationFrame(updateGame);
         }
@@ -1366,6 +1415,9 @@
             
             // Reset circle state
             gameState.circleActive = false;
+            
+            // Hide reaction timer
+            reactionTimer.style.display = 'none';
         }
 
         // Complete session
