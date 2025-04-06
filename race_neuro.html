@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeuroTrack Vision Therapy</title>
+    <title>תרפיית ראייה NeuroTrack</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
@@ -35,17 +35,23 @@
             align-items: center;
             color: var(--dark);
             padding: 20px;
+            direction: rtl;
+            text-align: right;
         }
 
         .title-container {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px; /* Reduced from 20px */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 1.8rem; /* Reduced from 2.5rem */
             font-weight: 700;
-            margin: 0.5rem 0;
+            margin: 0.2rem 0; /* Reduced from 0.5rem */
             background: linear-gradient(to right, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             background-clip: text;
@@ -54,33 +60,52 @@
         }
 
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 0.9rem; /* Reduced from 1.2rem */
             color: #666;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem; /* Reduced from 1.5rem */
+            margin-right: 10px;
         }
 
         .game-container {
-            width: 90%;
-            max-width: 1000px;
+            width: 95%;
+            max-width: 5500px; /* Much wider maximum width */
             margin: 0 auto;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: var(--shadow);
             background-color: white;
             position: relative;
+            display: flex;
+            flex-direction: row-reverse; /* Right-to-left order for RTL */
+        }
+
+        .game-main-area {
+            flex: 1;
+            position: relative;
+        }
+
+        .game-sidebar {
+            width: 500px;
+            background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+            border-right: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
         }
 
         .track-selector {
             display: flex;
-            justify-content: space-between;
-            padding: 20px;
-            background: linear-gradient(to right, #f8f9fa, #ffffff);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 20px;
         }
 
         .track-option {
-            width: 100px;
-            height: 100px;
+            margin: 10px 0;
+            width: 90%;
+            max-width: 100px;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
@@ -90,7 +115,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0 10px;
             background-color: white;
         }
 
@@ -122,16 +146,17 @@
 
         .controls-panel {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: white;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 10px;
         }
 
         .control-group {
+            margin: 15px 0;
+            width: 100%;
             display: flex;
             align-items: center;
-            margin: 0 10px;
         }
 
         .control-label {
@@ -183,6 +208,7 @@
             transition: all 0.3s ease;
             background: transparent;
             color: #666;
+            direction: ltr;
         }
 
         .level-btn:hover {
@@ -212,7 +238,7 @@
         .action-buttons {
             display: flex;
             justify-content: center;
-            margin: 30px 0;
+            margin: 10px 0; /* Reduced from 30px */
         }
 
         .btn {
@@ -314,6 +340,7 @@
             font-weight: 600;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             display: none;
+            direction: ltr;
         }
 
         .progress-bar {
@@ -349,18 +376,27 @@
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
+            .game-container {
+                flex-direction: column;
+            }
+            
+            .game-sidebar {
+                width: 100%;
+                order: 2; /* Move sidebar below the game on small screens */
+            }
+            
             .track-selector {
+                flex-direction: row;
                 flex-wrap: wrap;
                 justify-content: center;
             }
             
             .track-option {
-                margin-bottom: 15px;
+                margin: 5px;
             }
             
-            .controls-panel {
-                flex-direction: column;
-                gap: 15px;
+            .game-main-area {
+                order: 1;
             }
             
             .game-canvas-container {
@@ -398,6 +434,7 @@
             display: flex;
             align-items: center;
             width: 100%;
+            flex-direction: row-reverse;
         }
         
         .slider {
@@ -437,6 +474,7 @@
             min-width: 50px;
             text-align: center;
             color: var(--primary);
+            direction: ltr;
         }
 
         /* New reaction timer styles */
@@ -479,6 +517,7 @@
         #volumeValue {
             min-width: 60px; /* More space for text */
             font-size: 16px; /* Larger font */
+            direction: ltr;
         }
         
         /* Make volume icon larger */
@@ -490,7 +529,7 @@
         /* Increase width for wide screens */
         .game-container {
             width: 95%;
-            max-width: 2000px; /* Much wider maximum width */
+            max-width: 5000px; /* Much wider maximum width */
         }
         
         /* Make the canvas container taller to maintain aspect ratio */
@@ -509,119 +548,147 @@
                 height: 800px; /* Even taller for ultra-wide screens */
             }
         }
+
+        /* Compact layout for title and button on larger screens */
+        @media screen and (min-width: 768px) {
+            .title-container {
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 0 20px;
+            }
+            
+            .title-section {
+                display: flex;
+                align-items: center;
+            }
+            
+            .action-buttons {
+                margin: 0;
+            }
+            
+            .btn {
+                padding: 8px 20px; /* Smaller padding */
+            }
+        }
     </style>
 </head>
 <body>
     <div class="title-container">
-        <h1>NeuroTrack Vision Therapy</h1>
-        <p class="subtitle">Advanced visual tracking exercise for improved neural processing</p>
+        <div class="title-section">
+            <h1>תרפיית ראייה NeuroTrack</h1>
+            <p class="subtitle">אימון מעקב חזותי מתקדם לשיפור עיבוד עצבי</p>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn start-button pulse" id="startBtn">
+                <i class="fas fa-play"></i> התחל אימון
+            </button>
+        </div>
     </div>
     
     <div class="game-container fade-in">
-        <div class="track-selector">
-            <div class="track-option selected" data-track="circle">
-                <canvas id="circlePreview"></canvas>
-                <div class="label">Circle</div>
+        <div class="game-sidebar">
+            <div class="track-selector">
+                <div class="track-option selected" data-track="circle">
+                    <canvas id="circlePreview"></canvas>
+                    <div class="label">מעגל</div>
+                </div>
+                <div class="track-option" data-track="figure8">
+                    <canvas id="figure8Preview"></canvas>
+                    <div class="label">ספרה 8</div>
+                </div>
+                <div class="track-option" data-track="zigzag">
+                    <canvas id="zigzagPreview"></canvas>
+                    <div class="label">זיגזג</div>
+                </div>
+                <div class="track-option" data-track="spiral">
+                    <canvas id="spiralPreview"></canvas>
+                    <div class="label">ספירלה</div>
+                </div>
             </div>
-            <div class="track-option" data-track="figure8">
-                <canvas id="figure8Preview"></canvas>
-                <div class="label">Figure 8</div>
-            </div>
-            <div class="track-option" data-track="zigzag">
-                <canvas id="zigzagPreview"></canvas>
-                <div class="label">Zigzag</div>
-            </div>
-            <div class="track-option" data-track="spiral">
-                <canvas id="spiralPreview"></canvas>
-                <div class="label">Spiral</div>
+            
+            <div class="controls-panel">
+                <div class="control-group">
+                    <span class="control-label">כיוון:</span>
+                    <button class="direction-btn" id="directionBtn"><i class="fas fa-rotate-right"></i></button>
+                </div>
+                
+                <div class="control-group">
+                    <span class="control-label">רמת מהירות:</span>
+                    <div class="level-options">
+                        <button class="level-btn selected" data-level="1">1</button>
+                        <button class="level-btn" data-level="2">2</button>
+                        <button class="level-btn" data-level="3">3</button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <span class="control-label">משך אימון:</span>
+                    <div class="level-options">
+                        <button class="level-btn selected" data-session="30">30 שניות</button>
+                        <button class="level-btn" data-session="60">60 שניות</button>
+                        <button class="level-btn" data-session="120">2 דקות</button>
+                    </div>
+                </div>
+                
+                <div class="control-group track-size-control">
+                    <span class="control-label">גודל מסלול:</span>
+                    <div class="slider-container">
+                        <input type="range" id="trackSizeSlider" min="40" max="95" value="75" class="slider">
+                        <span id="trackSizeValue">75%</span>
+                    </div>
+                </div>
+                <div class="control-group track-size-control">
+                    <span class="control-label">עוצמת קול:</span>
+                    <div class="slider-container">
+                        <i class="fas fa-volume-up" id="volumeIcon" style="margin-right: 10px;"></i>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="70" class="slider">
+                        <span id="volumeValue">70%</span>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <div class="controls-panel">
-            <div class="control-group">
-                <span class="control-label">Direction:</span>
-                <button class="direction-btn" id="directionBtn"><i class="fas fa-rotate-right"></i></button>
-            </div>
-            
-            <div class="control-group">
-                <span class="control-label">Speed Level:</span>
-                <div class="level-options">
-                    <button class="level-btn selected" data-level="1">1</button>
-                    <button class="level-btn" data-level="2">2</button>
-                    <button class="level-btn" data-level="3">3</button>
-                </div>
-            </div>
-            
-            <div class="control-group">
-                <span class="control-label">Session:</span>
-                <div class="level-options">
-                    <button class="level-btn selected" data-session="30">30s</button>
-                    <button class="level-btn" data-session="60">60s</button>
-                    <button class="level-btn" data-session="120">2m</button>
-                </div>
-            </div>
-            
-            <div class="control-group track-size-control">
-                <span class="control-label">Track Size:</span>
-                <div class="slider-container">
-                    <input type="range" id="trackSizeSlider" min="40" max="95" value="75" class="slider">
-                    <span id="trackSizeValue">75%</span>
-                </div>
-            </div>
-            <div class="control-group track-size-control">
-                <span class="control-label">Volume:</span>
-                <div class="slider-container">
-                    <i class="fas fa-volume-up" id="volumeIcon" style="margin-right: 10px;"></i>
-                    <input type="range" id="volumeSlider" min="0" max="100" value="70" class="slider">
-                    <span id="volumeValue">70%</span>
+        <div class="game-main-area">
+            <div class="game-canvas-container">
+                <canvas id="gameCanvas"></canvas>
+                <div class="timer-display" id="timerDisplay">00:30</div>
+                <div class="reaction-timer" id="reactionTimer">0.00s</div>
+                <div class="progress-bar" id="progressBar"></div>
+                <div class="stats-container" id="statsContainer">
+                    <div class="stat-item"><span class="stat-label">מסלול:</span> <span id="statTrack">מעגל</span></div>
+                    <div class="stat-item"><span class="stat-label">מהירות:</span> <span id="statSpeed">רמה 1</span></div>
+                    <div class="stat-item"><span class="stat-label">כיוון:</span> <span id="statDirection">עם כיוון השעון</span></div>
                 </div>
             </div>
         </div>
-        
-        <div class="game-canvas-container">
-            <canvas id="gameCanvas"></canvas>
-            <div class="timer-display" id="timerDisplay">00:30</div>
-            <div class="reaction-timer" id="reactionTimer">0.00s</div>
-            <div class="progress-bar" id="progressBar"></div>
-            <div class="stats-container" id="statsContainer">
-                <div class="stat-item"><span class="stat-label">Track:</span> <span id="statTrack">Circle</span></div>
-                <div class="stat-item"><span class="stat-label">Speed:</span> <span id="statSpeed">Level 1</span></div>
-                <div class="stat-item"><span class="stat-label">Direction:</span> <span id="statDirection">Clockwise</span></div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="action-buttons">
-        <button class="btn start-button pulse" id="startBtn">
-            <i class="fas fa-play"></i> Start Session
-        </button>
     </div>
     
     <div class="instructions-card fade-in">
         <div class="instructions-header">
             <i class="fas fa-info-circle"></i>
-            <h3>How to Use</h3>
+            <h3>איך להשתמש</h3>
         </div>
         <div class="instructions-body">
             <div class="instruction-step">
                 <div class="step-number">1</div>
-                <div class="step-text">Select a track pattern based on your therapy needs (Circle, Figure-8, Zigzag, or Spiral)</div>
+                <div class="step-text">בחר תבנית מסלול בהתאם לצרכי האימון שלך (מעגל, ספרה 8, זיגזג או ספירלה)</div>
             </div>
             <div class="instruction-step">
                 <div class="step-number">2</div>
-                <div class="step-text">Choose direction (clockwise or counter-clockwise) and adjust the speed level to match your ability</div>
+                <div class="step-text">בחר כיוון (עם כיוון השעון או נגד כיוון השעון) והתאם את רמת המהירות ליכולת שלך</div>
             </div>
             <div class="instruction-step">
                 <div class="step-number">3</div>
-                <div class="step-text">Select a session duration that works for you</div>
+                <div class="step-text">בחר משך אימון שמתאים לך</div>
             </div>
             <div class="instruction-step">
                 <div class="step-number">4</div>
-                <div class="step-text"><strong>Focus only on car #3</strong> (highlighted with a glow) as it moves around the track. Try to ignore the other cars.</div>
+                <div class="step-text"><strong>התמקד רק במכונית מספר 3</strong> (מודגשת עם זוהר) בזמן שהיא נעה במסלול. נסה להתעלם מהמכוניות האחרות</div>
             </div>
             <div class="instruction-step">
                 <div class="step-number">5</div>
-                <div class="step-text">Follow car #3 with your eyes only - try not to move your head. This increases the challenge and effectiveness.</div>
+                <div class="step-text">עקוב אחר מכונית מספר 3 עם העיניים בלבד - נסה לא להזיז את הראש. זה מגביר את האתגר והיעילות</div>
             </div>
         </div>
     </div>
@@ -1081,7 +1148,8 @@
             if (gameState.isRunning) {
                 gameState.cars.forEach(car => {
                     const pos = car.position;
-                    const objSize = 14;
+                    // Make car #3 significantly larger than other cars
+                    const objSize = car.isMainCar ? 22 : 14;
                     
                     // Calculate angle based on movement direction
                     let angle = 0;
@@ -1181,7 +1249,8 @@
                 ctx.lineWidth = size * 0.2;
                 ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
                 ctx.beginPath();
-                ctx.arc(0, 0, size * 2.0, 0, Math.PI * 2);
+                // Adjust the circle radius to maintain proper proportion with the larger car
+                ctx.arc(0, 0, size * 2.2, 0, Math.PI * 2);
                 ctx.stroke();
             }
             
@@ -1298,9 +1367,20 @@
 
         // Update stats display
         function updateStats() {
-            statTrack.textContent = gameState.trackType.charAt(0).toUpperCase() + gameState.trackType.slice(1);
-            statSpeed.textContent = `Level ${gameState.level}`;
-            statDirection.textContent = gameState.direction > 0 ? 'Clockwise' : 'Counter-Clockwise';
+            statTrack.textContent = getTrackNameInHebrew(gameState.trackType);
+            statSpeed.textContent = `רמה ${gameState.level}`;
+            statDirection.textContent = gameState.direction > 0 ? 'עם כיוון השעון' : 'נגד כיוון השעון';
+        }
+
+        // פונקציה חדשה להמרת שם המסלול לעברית
+        function getTrackNameInHebrew(trackType) {
+            switch(trackType) {
+                case 'circle': return 'מעגל';
+                case 'figure8': return 'ספרה 8';
+                case 'zigzag': return 'זיגזג';
+                case 'spiral': return 'ספירלה';
+                default: return 'מעגל';
+            }
         }
 
         // Update game state
@@ -1439,7 +1519,7 @@
             }
             
             // Update button text
-            startBtn.innerHTML = '<i class="fas fa-stop"></i> Stop Session';
+            startBtn.innerHTML = '<i class="fas fa-stop"></i> עצור אימון';
             startBtn.classList.remove('pulse');
             gameState.isRunning = true;
             
@@ -1468,7 +1548,7 @@
         // Stop game
         function stopGame() {
             gameState.isRunning = false;
-            startBtn.innerHTML = '<i class="fas fa-play"></i> Start Session';
+            startBtn.innerHTML = '<i class="fas fa-play"></i> התחל אימון';
             startBtn.classList.add('pulse');
             
             // Stop race sound when session is stopped
@@ -1489,7 +1569,7 @@
         function completeSession() {
             gameState.isRunning = false;
             startBtn.textContent = 'Start Session';
-            startBtn.innerHTML = '<i class="fas fa-play"></i> Start Session';
+            startBtn.innerHTML = '<i class="fas fa-play"></i> התחל אימון';
             startBtn.classList.remove('pulse');
             
             timerDisplay.style.display = 'none';
@@ -1657,7 +1737,7 @@
                     clearInterval(countdownTimer);
                     
                     // Remove the countdown display
-                    countdownDisplay.textContent = "GO!";
+                    countdownDisplay.textContent = "צא!";
                     
                     // Start race sound
                     playRaceSound();
